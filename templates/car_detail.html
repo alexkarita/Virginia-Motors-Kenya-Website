@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+{% block title %}{{ car['title'] }} – Virginia Motors{% endblock %}
+{% block extra_head %}
+<style>
+.breadcrumb{background:var(--black);border-bottom:1px solid #161616;padding:14px 30px}
+.breadcrumb .container{font-size:13px;color:var(--muted)}
+.breadcrumb a{color:var(--muted);text-decoration:none}
+.breadcrumb a:hover{color:var(--white)}
+.detail-wrap{max-width:1240px;margin:0 auto;padding:40px 30px;display:grid;grid-template-columns:1fr 370px;gap:32px}
+.main-img{aspect-ratio:16/10;overflow:hidden;background:var(--steel);border-radius:6px}
+.main-img img{width:100%;height:100%;object-fit:cover;cursor:zoom-in}
+.thumbs{display:flex;gap:8px;margin-top:10px;overflow-x:auto}
+.thumb{width:90px;height:62px;flex-shrink:0;border-radius:4px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:border-color .2s}
+.thumb.active{border-color:var(--red)}
+.thumb img{width:100%;height:100%;object-fit:cover}
+.car-main-title{font-family:var(--font-display);font-size:40px;letter-spacing:2px;line-height:1}
+.car-main-price{font-family:var(--font-display);font-size:48px;color:var(--red);letter-spacing:1px;margin:12px 0}
+.specs-grid{display:grid;grid-template-columns:1fr 1fr;border:1px solid #1e1e1e;border-radius:6px;overflow:hidden;margin:20px 0}
+.spec-item{padding:13px 16px;border-bottom:1px solid #161616;display:flex;flex-direction:column;gap:4px}
+.spec-item:nth-child(odd){border-right:1px solid #161616}
+.spec-label{font-family:var(--font-cond);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.spec-value{font-size:15px;font-weight:600}
+.sidebar-card{background:var(--charcoal);border:1px solid #1e1e1e;border-radius:6px;padding:24px;margin-bottom:14px}
+.cta-section-title{font-family:var(--font-cond);font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:16px}
+.wa-cta{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:16px;background:#25D366;color:#fff;border:none;border-radius:5px;font-family:var(--font-cond);font-size:16px;letter-spacing:1px;font-weight:700;text-decoration:none;transition:opacity .2s;margin-bottom:10px}
+.wa-cta:hover{opacity:.88}
+.wa-cta i{font-size:22px}
+.alt-cta{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px;background:var(--steel);color:var(--white);border:1px solid #383838;border-radius:5px;font-family:var(--font-cond);font-size:14px;font-weight:700;text-decoration:none;letter-spacing:1px;margin-bottom:8px;transition:border-color .2s}
+.alt-cta:hover{border-color:var(--red)}
+.sold-notice{text-align:center;padding:20px;background:var(--steel);border-radius:6px;color:var(--muted);font-family:var(--font-cond);font-size:14px;letter-spacing:1px}
+.desc-section{margin-top:26px}
+.desc-heading{font-family:var(--font-cond);font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:12px}
+.desc-text{color:var(--silver);font-size:15px;line-height:1.85}
+.views-note{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.related-section{padding:50px 30px;max-width:1240px;margin:0 auto}
+@media(max-width:900px){.detail-wrap{grid-template-columns:1fr}}
+</style>
+{% endblock %}
+{% block content %}
+<div class="breadcrumb">
+  <div class="container">
+    <a href="/">Home</a> › <a href="/cars">Cars</a> › {{ car['title'] }}
+  </div>
+</div>
+
+<div class="detail-wrap">
+  <!-- GALLERY & INFO -->
+  <div>
+    {% if car['images'] %}
+    {% set imgs = car['images'].split(',') %}
+    <div class="main-img">
+      <img id="mainImg" src="/static/uploads/{{ imgs[0] }}" alt="{{ car['title'] }}"
+           onerror="this.parentElement.innerHTML='<div style=\'display:flex;align-items:center;justify-content:center;height:100%\'><i class=\'fas fa-car\' style=\'font-size:80px;color:#222\'></i></div>'">
+    </div>
+    {% if imgs|length > 1 %}
+    <div class="thumbs">
+      {% for img in imgs %}
+      <div class="thumb {{ 'active' if loop.first }}" onclick="switchImg('/static/uploads/{{ img }}',this)">
+        <img src="/static/uploads/{{ img }}" alt="Photo {{ loop.index }}">
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% else %}
+    <div class="main-img" style="display:flex;align-items:center;justify-content:center">
+      <i class="fas fa-car" style="font-size:100px;color:#1e1e1e"></i>
+    </div>
+    {% endif %}
+
+    <div style="margin-top:26px">
+      <div class="views-note"><i class="fas fa-eye"></i> {{ car['views'] }} people viewed this car</div>
+      <div style="font-family:var(--font-cond);font-size:12px;color:var(--muted);letter-spacing:2px;text-transform:uppercase">{{ car['brand'] }} &middot; {{ car['year'] }}</div>
+      <h1 class="car-main-title">{{ car['title'] }}</h1>
+      <div class="car-main-price">{{ car['price']|format_price }}</div>
+      {% if car['sold'] %}<div style="display:inline-block;padding:6px 18px;background:#222;color:var(--muted);font-family:var(--font-cond);letter-spacing:2px;font-size:12px;border-radius:3px;margin-bottom:12px">SOLD</div>{% endif %}
+
+      <div class="specs-grid">
+        <div class="spec-item"><span class="spec-label">Year</span><span class="spec-value">{{ car['year'] }}</span></div>
+        <div class="spec-item"><span class="spec-label">Mileage</span><span class="spec-value">{{ car['mileage']|format_mileage }}</span></div>
+        <div class="spec-item"><span class="spec-label">Fuel</span><span class="spec-value">{{ car['fuel_type'] or 'N/A' }}</span></div>
+        <div class="spec-item"><span class="spec-label">Transmission</span><span class="spec-value">{{ car['transmission'] or 'N/A' }}</span></div>
+        <div class="spec-item"><span class="spec-label">Body Type</span><span class="spec-value">{{ car['body_type'] or 'N/A' }}</span></div>
+        <div class="spec-item"><span class="spec-label">Color</span><span class="spec-value">{{ car['color'] or 'N/A' }}</span></div>
+        <div class="spec-item"><span class="spec-label">Condition</span><span class="spec-value">{{ car['condition'] }}</span></div>
+        <div class="spec-item"><span class="spec-label">Location</span><span class="spec-value">{{ car['location'] or 'Mombasa' }}</span></div>
+      </div>
+
+      {% if car['description'] %}
+      <div class="desc-section">
+        <div class="desc-heading">About This Car</div>
+        <p class="desc-text">{{ car['description'] }}</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- CONTACT SIDEBAR -->
+  <div>
+    <div class="sidebar-card">
+      <div class="cta-section-title">Sold by Virginia</div>
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid #1e1e1e">
+        <div style="width:48px;height:48px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:22px;flex-shrink:0">V</div>
+        <div>
+          <div style="font-family:var(--font-cond);font-size:18px;font-weight:700">Virginia</div>
+          <div style="font-size:13px;color:var(--muted)">Virginia Motors · Mombasa</div>
+        </div>
+      </div>
+
+      {% if not car['sold'] %}
+      <a class="wa-cta" href="https://wa.me/{{ contact.whatsapp }}?text=Hi Virginia! I'm interested in the {{ car['title'] }} listed for {{ car['price']|format_price }} on your website. Is it still available?" target="_blank" rel="noopener">
+        <i class="fab fa-whatsapp"></i> Chat on WhatsApp
+      </a>
+      <a class="alt-cta" href="tel:{{ contact.phone }}"><i class="fas fa-phone"></i> Call Virginia</a>
+      <a class="alt-cta" href="https://mail.google.com/mail/?view=cm&to={{ contact.email }}&su=Inquiry: {{ car['title'] }}&body=Hi Virginia, I am interested in the {{ car['title'] }} listed for {{ car['price']|format_price }} on your website. Is it still available?" target="_blank"><i class="fas fa-envelope"></i> Send Email</a>
+      {% else %}
+      <div class="sold-notice">
+        <i class="fas fa-check-circle" style="color:#4caf50;font-size:28px;display:block;margin-bottom:10px"></i>
+        This car has been sold.<br>
+        <a href="/cars" style="color:var(--red);text-decoration:none;font-weight:700">Browse available cars →</a>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="sidebar-card">
+      <div class="cta-section-title">Quick Details</div>
+      <div style="font-size:13px;color:var(--muted);line-height:2">
+        <div><i class="fas fa-tag" style="width:18px;color:var(--red)"></i> {{ car['condition'] }} condition</div>
+        <div><i class="fas fa-map-marker-alt" style="width:18px;color:var(--red)"></i> {{ car['location'] or 'Mombasa' }}, Kenya</div>
+        <div><i class="fas fa-calendar" style="width:18px;color:var(--red)"></i> Listed {{ car['created_at'][:10] }}</div>
+        <div><i class="fas fa-eye" style="width:18px;color:var(--red)"></i> {{ car['views'] }} views</div>
+      </div>
+      <div style="margin-top:16px;padding-top:16px;border-top:1px solid #1e1e1e">
+        <a href="/cars?brand={{ car['brand'] }}" class="btn btn-outline" style="width:100%;justify-content:center;font-size:12px;padding:10px">
+          More {{ car['brand'] }} Cars <i class="fas fa-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if related %}
+<div class="related-section">
+  <div class="section-title" style="font-size:30px;margin-bottom:24px">MORE <span>{{ car['brand']|upper }}</span> CARS</div>
+  <div class="cars-grid">{% for car in related %}{% include '_car_card.html' %}{% endfor %}</div>
+</div>
+{% endif %}
+{% endblock %}
+{% block scripts %}
+<script>
+function switchImg(src,el){
+  document.getElementById('mainImg').src=src;
+  document.querySelectorAll('.thumb').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+}
+</script>
+{% endblock %}

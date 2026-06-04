@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block title %}Browse Cars – Virginia Motors{% endblock %}
+{% block extra_head %}
+<style>
+.page-banner{background:var(--black);border-bottom:1px solid #161616;padding:32px 30px}
+.page-banner .container{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.shop-layout{display:grid;grid-template-columns:250px 1fr;gap:24px;padding:36px 30px;max-width:1240px;margin:0 auto}
+.sidebar{background:var(--charcoal);border:1px solid #222;border-radius:6px;padding:22px;align-self:start;position:sticky;top:86px}
+.filter-title{font-family:var(--font-cond);font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:12px;margin-top:18px;padding-bottom:8px;border-bottom:1px solid #1e1e1e}
+.filter-title:first-child{margin-top:0}
+.sidebar label{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--silver);cursor:pointer;padding:4px 0}
+.sidebar label input{accent-color:var(--red)}
+.price-row{display:flex;gap:8px;align-items:center}
+.price-row input{flex:1;background:var(--steel);border:1px solid #333;color:var(--white);padding:8px;border-radius:4px;font-size:13px}
+.price-row span{color:var(--muted);font-size:12px}
+.shop-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px}
+.result-count{font-family:var(--font-cond);font-size:14px;color:var(--muted)}
+.result-count strong{color:var(--white);font-size:20px}
+.sort-sel{background:var(--charcoal);border:1px solid #333;color:var(--white);padding:9px 14px;border-radius:4px;font-size:13px;cursor:pointer}
+.empty{text-align:center;padding:80px 20px}
+.empty i{font-size:60px;color:#1e1e1e;display:block;margin-bottom:18px}
+.empty h3{font-family:var(--font-cond);font-size:24px;margin-bottom:8px}
+@media(max-width:768px){.shop-layout{grid-template-columns:1fr}.sidebar{position:static}}
+</style>
+{% endblock %}
+{% block content %}
+<div class="page-banner">
+  <div class="container">
+    <div>
+      <div class="section-title" style="font-size:34px">OUR <span>CARS</span></div>
+      <div class="section-sub">Every car sold directly by Virginia</div>
+    </div>
+    <a href="https://wa.me/{{ contact.whatsapp }}?text=Hi Virginia, I'm browsing your cars and have a question." target="_blank" class="btn btn-green"><i class="fab fa-whatsapp"></i> Ask Virginia</a>
+  </div>
+</div>
+
+<form method="GET" action="/cars">
+<div class="shop-layout">
+  <aside class="sidebar">
+    <div class="filter-title">Brand</div>
+    <select name="brand" class="form-select" style="margin-bottom:8px">
+      <option value="">All Brands</option>
+      {% for b in brands %}<option value="{{ b }}" {{ 'selected' if brand==b }}>{{ b }}</option>{% endfor %}
+    </select>
+
+    <div class="filter-title">Price Range (KES)</div>
+    <div class="price-row">
+      <input type="number" name="min_p" placeholder="Min" value="{{ min_p if min_p else '' }}">
+      <span>–</span>
+      <input type="number" name="max_p" placeholder="Max" value="{{ max_p if max_p < 999999999 else '' }}">
+    </div>
+
+    <div class="filter-title">Fuel Type</div>
+    {% for f in ['Petrol','Diesel','Hybrid','Electric'] %}
+    <label><input type="radio" name="fuel" value="{{ f }}" {{ 'checked' if fuel==f }}> {{ f }}</label>
+    {% endfor %}
+    <label><input type="radio" name="fuel" value="" {{ 'checked' if not fuel }}> Any</label>
+
+    <div class="filter-title">Transmission</div>
+    {% for t in ['Automatic','Manual'] %}
+    <label><input type="radio" name="trans" value="{{ t }}" {{ 'checked' if trans==t }}> {{ t }}</label>
+    {% endfor %}
+    <label><input type="radio" name="trans" value="" {{ 'checked' if not trans }}> Any</label>
+
+    <div class="filter-title">Body Type</div>
+    {% for bt in ['SUV','Sedan','Hatchback','Pickup','Van','Coupe'] %}
+    <label><input type="radio" name="body" value="{{ bt }}" {{ 'checked' if body==bt }}> {{ bt }}</label>
+    {% endfor %}
+    <label><input type="radio" name="body" value="" {{ 'checked' if not body }}> Any</label>
+
+    <div class="filter-title">Condition</div>
+    <label><input type="radio" name="cond" value="New" {{ 'checked' if cond=='New' }}> New</label>
+    <label><input type="radio" name="cond" value="Used" {{ 'checked' if cond=='Used' }}> Used</label>
+    <label><input type="radio" name="cond" value="" {{ 'checked' if not cond }}> Any</label>
+
+    <button type="submit" class="btn btn-red" style="width:100%;justify-content:center;margin-top:16px">Apply Filters</button>
+    <a href="/cars" style="display:block;text-align:center;margin-top:10px;font-size:12px;color:var(--muted);text-decoration:none">Reset</a>
+  </aside>
+
+  <div>
+    <div class="shop-top">
+      <div class="result-count"><strong>{{ cars|length }}</strong> cars available</div>
+      <select name="sort" class="sort-sel" onchange="this.form.submit()">
+        <option value="newest" {{ 'selected' if sort=='newest' }}>Newest First</option>
+        <option value="price_asc" {{ 'selected' if sort=='price_asc' }}>Price: Low to High</option>
+        <option value="price_desc" {{ 'selected' if sort=='price_desc' }}>Price: High to Low</option>
+        <option value="mileage" {{ 'selected' if sort=='mileage' }}>Lowest Mileage</option>
+      </select>
+    </div>
+    {% if cars %}
+    <div class="cars-grid">{% for car in cars %}{% include '_car_card.html' %}{% endfor %}</div>
+    {% else %}
+    <div class="empty">
+      <i class="fas fa-car"></i>
+      <h3>No Cars Found</h3>
+      <p style="color:var(--muted);margin-bottom:20px">Try adjusting your filters.</p>
+      <a href="/cars" class="btn btn-red">Clear Filters</a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+</form>
+{% endblock %}

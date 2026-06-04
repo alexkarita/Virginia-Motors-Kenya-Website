@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Virginia Motors – Quality Cars Kenya{% endblock %}</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<style>
+:root {
+  --black:#0a0a0a; --carbon:#141414; --charcoal:#1e1e1e; --steel:#2a2a2a;
+  --muted:#888; --silver:#c8c8c8; --white:#f5f5f5;
+  --red:#e63329; --red-dark:#b82820;
+  --gold:#c9a84c;
+  --font-display:'Bebas Neue',sans-serif;
+  --font-cond:'Barlow Condensed',sans-serif;
+  --font-body:'Barlow',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--carbon);color:var(--white);font-family:var(--font-body);font-size:15px;line-height:1.6;min-height:100vh}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:70px;background:rgba(8,8,8,0.97);backdrop-filter:blur(12px);border-bottom:1px solid #1e1e1e}
+.nav-logo{text-decoration:none;display:flex;flex-direction:column;line-height:1}
+.nav-logo-top{font-family:var(--font-display);font-size:22px;letter-spacing:6px;color:var(--white)}
+.nav-logo-top span{color:var(--red)}
+.nav-logo-sub{font-family:var(--font-cond);font-size:9px;letter-spacing:4px;color:var(--muted);text-transform:uppercase}
+.nav-links{display:flex;align-items:center;gap:36px;list-style:none}
+.nav-links a{color:var(--silver);text-decoration:none;font-family:var(--font-cond);font-size:13px;letter-spacing:2.5px;text-transform:uppercase;font-weight:600;transition:color .2s;padding-bottom:4px;border-bottom:2px solid transparent}
+.nav-links a:hover,.nav-links a.active{color:var(--white);border-color:var(--red)}
+.nav-wa{background:#25D366;color:#fff!important;padding:9px 20px;border-bottom:none!important;border-radius:3px;display:flex;align-items:center;gap:7px}
+.nav-wa:hover{background:#1fba5a!important;opacity:1}
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer}
+.hamburger span{display:block;width:24px;height:2px;background:var(--white);transition:all .3s}
+
+/* FLASH */
+.flash-wrap{position:fixed;top:80px;right:20px;z-index:2000;display:flex;flex-direction:column;gap:8px}
+.flash{padding:12px 18px;border-radius:4px;font-size:14px;font-family:var(--font-cond);letter-spacing:.5px;display:flex;align-items:center;gap:10px;animation:sIn .3s ease}
+.flash.success{background:#1a3a1a;border-left:3px solid #4caf50;color:#90ee90}
+.flash.error{background:#3a1a1a;border-left:3px solid var(--red);color:#ff9090}
+.flash.info{background:#1a2a3a;border-left:3px solid #4a9eff;color:#90c8ff}
+.flash-close{margin-left:auto;cursor:pointer;opacity:.6;background:none;border:none;color:inherit;font-size:16px}
+@keyframes sIn{from{transform:translateX(40px);opacity:0}to{transform:translateX(0);opacity:1}}
+
+main{padding-top:70px;min-height:calc(100vh - 70px)}
+
+/* SECTION */
+.section-title{font-family:var(--font-display);font-size:42px;letter-spacing:4px;color:var(--white)}
+.section-title span{color:var(--red)}
+.section-sub{color:var(--muted);font-size:13px;letter-spacing:2px;text-transform:uppercase;margin-top:5px}
+.container{max-width:1240px;margin:0 auto;padding:0 30px}
+
+/* CAR CARD */
+.cars-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+.car-card{background:var(--charcoal);border:1px solid #252525;border-radius:6px;overflow:hidden;transition:transform .25s,border-color .25s;cursor:pointer;text-decoration:none;color:inherit;display:block}
+.car-card:hover{transform:translateY(-5px);border-color:var(--red)}
+.car-img-wrap{position:relative;aspect-ratio:16/10;overflow:hidden;background:var(--steel)}
+.car-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.car-card:hover .car-img-wrap img{transform:scale(1.06)}
+.car-badge{position:absolute;top:10px;left:10px;padding:4px 10px;font-family:var(--font-cond);font-size:11px;letter-spacing:1.5px;font-weight:700;text-transform:uppercase;border-radius:2px}
+.badge-new{background:var(--red);color:#fff}
+.badge-used{background:rgba(0,0,0,.65);color:var(--silver);border:1px solid #444}
+.badge-sold{background:#222;color:#555}
+.car-info{padding:16px}
+.car-brand{font-family:var(--font-cond);font-size:11px;letter-spacing:2px;color:var(--muted);text-transform:uppercase}
+.car-title{font-family:var(--font-cond);font-size:18px;font-weight:700;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.car-price{font-family:var(--font-display);font-size:22px;color:var(--red);letter-spacing:1px;margin:8px 0}
+.car-specs{display:flex;gap:14px;flex-wrap:wrap}
+.car-spec{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted)}
+.no-img{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+.no-img i{font-size:48px;color:#2a2a2a}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;font-family:var(--font-cond);font-size:14px;letter-spacing:2px;font-weight:700;text-transform:uppercase;text-decoration:none;border:none;cursor:pointer;transition:all .2s;border-radius:3px}
+.btn-red{background:var(--red);color:#fff}
+.btn-red:hover{background:var(--red-dark)}
+.btn-outline{background:transparent;color:var(--white);border:1px solid #444}
+.btn-outline:hover{border-color:var(--red);color:var(--red)}
+.btn-green{background:#25D366;color:#fff}
+.btn-green:hover{background:#1fba5a}
+
+/* FORMS */
+.form-group{margin-bottom:18px}
+.form-label{display:block;font-family:var(--font-cond);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+.form-input,.form-select,.form-textarea{width:100%;background:var(--steel);border:1px solid #333;color:var(--white);padding:11px 14px;border-radius:4px;font-family:var(--font-body);font-size:14px;transition:border-color .2s;appearance:none}
+.form-input:focus,.form-select:focus,.form-textarea:focus{outline:none;border-color:var(--red)}
+.form-textarea{resize:vertical;min-height:110px}
+
+/* FOOTER */
+footer{background:var(--black);border-top:1px solid #161616;padding:50px 40px 28px;margin-top:80px}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:50px;margin-bottom:40px}
+.footer-logo{font-family:var(--font-display);font-size:28px;letter-spacing:4px;margin-bottom:10px}
+.footer-logo span{color:var(--red)}
+.footer-desc{color:var(--muted);font-size:14px;line-height:1.8;max-width:300px}
+.footer-heading{font-family:var(--font-cond);font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:16px}
+.footer-links{list-style:none}
+.footer-links li+li{margin-top:10px}
+.footer-links a{color:var(--muted);text-decoration:none;font-size:14px;transition:color .2s}
+.footer-links a:hover{color:var(--white)}
+.footer-contact-item{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:14px;margin-bottom:10px;text-decoration:none;transition:color .2s}
+.footer-contact-item:hover{color:var(--white)}
+.footer-contact-item i{color:var(--red);width:16px}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;border-top:1px solid #161616;padding-top:24px}
+.footer-copy{color:#383838;font-size:13px}
+
+@media(max-width:768px){
+  nav{padding:0 20px}
+  .hamburger{display:flex}
+  .nav-links{display:none;flex-direction:column;position:absolute;top:70px;left:0;right:0;background:var(--black);padding:24px;gap:22px;border-bottom:1px solid #222}
+  .nav-links.open{display:flex}
+  .footer-grid{grid-template-columns:1fr;gap:30px}
+  .footer-bottom{flex-direction:column;gap:10px;text-align:center}
+}
+</style>
+{% block extra_head %}{% endblock %}
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="/">
+    <span class="nav-logo-top"><span>VIRGINIA</span> MOTORS</span>
+    <span class="nav-logo-sub">Quality Cars · Kenya</span>
+  </a>
+  <button class="hamburger" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-links">
+    <li><a href="/" class="{{ 'active' if request.endpoint=='index' }}">Home</a></li>
+    <li><a href="/cars" class="{{ 'active' if request.endpoint=='cars' }}">Our Cars</a></li>
+    <li><a href="/contact" class="{{ 'active' if request.endpoint=='contact' }}">Contact</a></li>
+    <li><a href="https://wa.me/254707394750?text=Hi Virginia, I found your site and I'm interested in your cars." target="_blank" class="nav-wa"><i class="fab fa-whatsapp"></i> WhatsApp Us</a></li>
+  </ul>
+</nav>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div class="flash-wrap">
+  {% for cat, msg in messages %}
+  <div class="flash {{ cat }}">
+    <i class="fas {{ {'success':'fa-check-circle','error':'fa-times-circle','info':'fa-info-circle'}.get(cat,'fa-info-circle') }}"></i>
+    {{ msg }}
+    <button class="flash-close" onclick="this.parentElement.remove()">&times;</button>
+  </div>
+  {% endfor %}
+</div>
+<script>setTimeout(()=>document.querySelectorAll('.flash').forEach(f=>f.remove()),5000)</script>
+{% endif %}
+{% endwith %}
+
+<main>{% block content %}{% endblock %}</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo"><span>VIRGINIA</span> MOTORS</div>
+        <p class="footer-desc">Your trusted source for quality cars in Kenya. Every vehicle personally selected and sold by Virginia. Drive with confidence.</p>
+      </div>
+      <div>
+        <div class="footer-heading">Quick Links</div>
+        <ul class="footer-links">
+          <li><a href="/">Home</a></li>
+          <li><a href="/cars">Browse Cars</a></li>
+          <li><a href="/cars?cond=New">New Arrivals</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-heading">Get In Touch</div>
+        <a class="footer-contact-item" href="https://wa.me/254707394750" target="_blank"><i class="fab fa-whatsapp"></i> 0707 394 750</a>
+        <a class="footer-contact-item" href="tel:0707394750"><i class="fas fa-phone"></i> 0707 394 750</a>
+        <a class="footer-contact-item" href="mailto:Wanguvirginia1@gmail.com"><i class="fas fa-envelope"></i> Wanguvirginia1@gmail.com</a>
+        <a class="footer-contact-item" href="https://www.google.com/maps/dir/?api=1&destination=Moi+Ave,+Mombasa,+Kenya" target="_blank"><i class="fas fa-map-marker-alt"></i> Moi Ave, Mombasa</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">&copy; 2025 Virginia Motors. All rights reserved.</span>
+      <span class="footer-copy">Mombasa, Kenya</span>
+    </div>
+  </div>
+</footer>
+
+{% block scripts %}{% endblock %}
+</body>
+</html>

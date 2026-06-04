@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% block title %}Edit Car – Virginia Motors Admin{% endblock %}
+{% block extra_head %}
+<style>
+.admin-form-wrap{max-width:860px;margin:0 auto;padding:40px 30px}
+.form-card{background:var(--charcoal);border:1px solid #1e1e1e;border-radius:8px;padding:32px;margin-bottom:18px}
+.form-card-title{font-family:var(--font-cond);font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:22px;padding-bottom:12px;border-bottom:1px solid #1e1e1e;display:flex;align-items:center;gap:10px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.existing-imgs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.existing-img-wrap{position:relative}
+.existing-img-wrap img{width:100px;height:70px;object-fit:cover;border-radius:4px;border:1px solid #333}
+.checkbox-row{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--silver);cursor:pointer;margin-bottom:10px}
+.checkbox-row input{accent-color:var(--red);width:16px;height:16px}
+.preview-grid{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.preview-img{width:100px;height:70px;object-fit:cover;border-radius:4px;border:1px solid #333}
+@media(max-width:600px){.form-row,.form-row-3{grid-template-columns:1fr}}
+</style>
+{% endblock %}
+{% block content %}
+<div style="background:var(--black);border-bottom:1px solid #161616;padding:18px 30px;display:flex;align-items:center;justify-content:space-between">
+  <div style="font-family:var(--font-cond);font-size:13px;letter-spacing:3px;text-transform:uppercase;color:var(--red)">Edit Listing</div>
+  <a href="/admin/dashboard" class="btn btn-outline" style="padding:8px 16px;font-size:12px">← Dashboard</a>
+</div>
+<div class="admin-form-wrap">
+  <form method="POST" enctype="multipart/form-data">
+    <div class="form-card">
+      <div class="form-card-title"><i class="fas fa-info-circle"></i> Basic Information</div>
+      <div class="form-group"><label class="form-label">Title *</label>
+        <input type="text" name="title" class="form-input" value="{{ car['title'] }}" required>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Brand *</label>
+          <select name="brand" class="form-select" required>
+            {% for b in ['Toyota','Subaru','Mercedes-Benz','BMW','Honda','Volkswagen','Nissan','Mazda','Mitsubishi','Isuzu','Land Rover','Audi','Lexus','Ford','Hyundai','Kia','Porsche','Jeep','Suzuki','Volvo','Peugeot','Other'] %}
+            <option {{ 'selected' if car['brand']==b }}>{{ b }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Model *</label>
+          <input type="text" name="model" class="form-input" value="{{ car['model'] }}" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Year *</label>
+          <select name="year" class="form-select" required>
+            {% for y in range(2025,1990,-1) %}<option {{ 'selected' if car['year']==y }}>{{ y }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Condition *</label>
+          <select name="condition" class="form-select">
+            {% for c in ['Used','New','Locally Used'] %}<option {{ 'selected' if car['condition']==c }}>{{ c }}</option>{% endfor %}
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <div class="form-card-title"><i class="fas fa-cog"></i> Specifications</div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Fuel Type</label>
+          <select name="fuel_type" class="form-select">
+            {% for f in ['Petrol','Diesel','Hybrid','Electric'] %}<option {{ 'selected' if car['fuel_type']==f }}>{{ f }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Transmission</label>
+          <select name="transmission" class="form-select">
+            {% for t in ['Automatic','Manual'] %}<option {{ 'selected' if car['transmission']==t }}>{{ t }}</option>{% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="form-row-3">
+        <div class="form-group"><label class="form-label">Body Type</label>
+          <select name="body_type" class="form-select">
+            {% for bt in ['SUV','Sedan','Hatchback','Pickup','Van','Coupe'] %}<option {{ 'selected' if car['body_type']==bt }}>{{ bt }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Color</label>
+          <input type="text" name="color" class="form-input" value="{{ car['color'] or '' }}">
+        </div>
+        <div class="form-group"><label class="form-label">Mileage (km)</label>
+          <input type="number" name="mileage" class="form-input" value="{{ car['mileage'] or '' }}">
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <div class="form-card-title"><i class="fas fa-tag"></i> Price & Status</div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Price (KES) *</label>
+          <input type="number" name="price" class="form-input" value="{{ car['price'] }}" required>
+        </div>
+        <div class="form-group"><label class="form-label">Location</label>
+          <select name="location" class="form-select">
+            {% for l in ['Mombasa','Nairobi','Kisumu','Nakuru','Eldoret','Thika','Machakos','Nyeri'] %}
+            <option {{ 'selected' if car['location']==l }}>{{ l }}</option>{% endfor %}
+          </select>
+        </div>
+      </div>
+      <label class="checkbox-row"><input type="checkbox" name="featured" {{ 'checked' if car['featured'] }}> Featured on homepage</label>
+      <label class="checkbox-row"><input type="checkbox" name="sold" {{ 'checked' if car['sold'] }}> Mark as sold</label>
+    </div>
+
+    <div class="form-card">
+      <div class="form-card-title"><i class="fas fa-camera"></i> Photos</div>
+      {% if car['images'] %}
+      <div style="font-family:var(--font-cond);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Current Photos</div>
+      <div class="existing-imgs">
+        {% for img in car['images'].split(',') if img %}
+        <div class="existing-img-wrap">
+          <img src="/static/uploads/{{ img }}" alt="">
+        </div>
+        {% endfor %}
+      </div>
+      <input type="hidden" name="keep_images" value="{{ car['images'] }}">
+      {% endif %}
+      <div style="font-family:var(--font-cond);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Add New Photos</div>
+      <input type="file" name="new_images" multiple accept="image/*" class="form-input" style="padding:8px" onchange="previewImgs(this)">
+      <div class="preview-grid" id="prevGrid"></div>
+    </div>
+
+    <div class="form-card">
+      <div class="form-card-title"><i class="fas fa-align-left"></i> Description</div>
+      <div class="form-group"><label class="form-label">Description</label>
+        <textarea name="description" class="form-textarea" rows="5">{{ car['description'] or '' }}</textarea>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:14px;flex-wrap:wrap">
+      <button type="submit" class="btn btn-red" style="font-size:15px;padding:14px 36px"><i class="fas fa-save"></i> Save Changes</button>
+      <a href="/admin/dashboard" class="btn btn-outline">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+function previewImgs(inp){
+  const g=document.getElementById('prevGrid'); g.innerHTML='';
+  Array.from(inp.files).forEach(f=>{
+    const r=new FileReader(); r.onload=e=>{const i=document.createElement('img');i.src=e.target.result;i.className='preview-img';g.appendChild(i)}; r.readAsDataURL(f);
+  });
+}
+</script>
+{% endblock %}

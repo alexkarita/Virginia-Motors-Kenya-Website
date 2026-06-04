@@ -1,0 +1,23 @@
+<a class="car-card" href="/car/{{ car['id'] }}">
+  <div class="car-img-wrap">
+    {% if car['images'] %}
+    <img src="/static/uploads/{{ car['images'].split(',')[0] }}" alt="{{ car['title'] }}" loading="lazy"
+         onerror="this.parentElement.innerHTML='<div class=\'no-img\'><i class=\'fas fa-car\'></i></div>'">
+    {% else %}
+    <div class="no-img"><i class="fas fa-car"></i></div>
+    {% endif %}
+    <span class="car-badge {{ 'badge-sold' if car['sold'] else ('badge-new' if car['condition']=='New' else 'badge-used') }}">
+      {{ 'SOLD' if car['sold'] else car['condition'] }}
+    </span>
+  </div>
+  <div class="car-info">
+    <div class="car-brand">{{ car['brand'] }} &middot; {{ car['year'] }}</div>
+    <div class="car-title">{{ car['title'] }}</div>
+    <div class="car-price">{{ car['price']|format_price }}</div>
+    <div class="car-specs">
+      {% if car['mileage'] %}<span class="car-spec"><i class="fas fa-tachometer-alt"></i> {{ car['mileage']|format_mileage }}</span>{% endif %}
+      {% if car['fuel_type'] %}<span class="car-spec"><i class="fas fa-gas-pump"></i> {{ car['fuel_type'] }}</span>{% endif %}
+      {% if car['transmission'] %}<span class="car-spec"><i class="fas fa-cog"></i> {{ car['transmission'] }}</span>{% endif %}
+    </div>
+  </div>
+</a>
